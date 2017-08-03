@@ -1,42 +1,53 @@
 import * as express from 'express';
+import * as mysql from 'mysql';
 
 const app = express();
 
-app.get('/:id', (req, res) => {
-    console.log(req.params.id);
+const connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : '',
+    database : 'ofirdb'
+});
+connection.connect();
 
-    dbConn.getData(req.params.id, (err, user) => {
-        if (err) {
-            ///sdfksdjfslkdjf
-
-
-        }
-
-        if (!user) {
-            res.status(404).end();
+app.get('/api/:user/:pass', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    let query = `SELECT * FROM users WHERE username = '${req.params.user}' and password = '${req.params.pass}'`;
+    connection.query(query, (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
             return;
         }
 
-        res.json(user);
+        res.send(results);
     });
+y
 });
 
 
-app.listen(8080, (err) => {
+app.listen(3000, (err) => {
     if (err) {
         console.log(err);
         process.exit(1);
     }
 
-    console.log(`listening on port 8080`);
-})
+    console.log(`listening on port 3000`);
+});
 
-const dbConn = {
-    getData: (query, callback) => {
-        if(query === '1'){
-            callback(null, {id: 1, name: 'Danny'});
-            return;
-        }
-        callback(null, null);
-    }
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
