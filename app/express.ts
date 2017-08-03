@@ -14,8 +14,9 @@ connection.connect();
 app.get('/api/:user/:pass', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    let query = `SELECT * FROM users WHERE username = '${req.params.user}' and password = '${req.params.pass}'`;
-    connection.query(query, (err, results)=>{
+    let query = `SELECT * FROM users WHERE username = ? and password = ?`;
+
+    connection.query(query, [req.params.user, req.params.pass], (err, results)=>{
         if(err){
             console.log(err);
             res.status(500).send(err);
@@ -24,7 +25,7 @@ app.get('/api/:user/:pass', (req, res) => {
 
         res.send(results);
     });
-y
+
 });
 
 
