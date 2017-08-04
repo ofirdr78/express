@@ -25,16 +25,29 @@ app.get('/api/:user/:pass', (req, res) => {
 
         res.send(results);
     });
-
 });
 
+app.get('/api/:user', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    let query = `SELECT username FROM users WHERE username = ?`;
+
+    connection.query(query, [req.params.user], (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
 
 app.listen(3000, (err) => {
     if (err) {
         console.log(err);
         process.exit(1);
     }
-
     console.log(`listening on port 3000`);
 });
 
