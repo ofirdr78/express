@@ -1,7 +1,11 @@
 import * as express from 'express';
 import * as mysql from 'mysql';
+import * as bodyParser from 'body-parser';
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
     host     : 'localhost',
@@ -33,6 +37,25 @@ app.get('/api/:user', (req, res) => {
     let query = `SELECT username FROM users WHERE username = ?`;
 
     connection.query(query, [req.params.user], (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
+
+app.post('/api/newuser', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    let query = `INSERT INTO users (username, password, birthdate, firstname, lastname, city, country) 
+     VALUES (? , ? , ?, ? , ? , ? , ?)`;
+
+    connection.query(query, [req.body.username, req.body.password, req.body.birthdate, req.body.firstname, req.body.lastname,
+                  req.body.city, req.body.country], (err, results)=>{
         if(err){
             console.log(err);
             res.status(500).send(err);
