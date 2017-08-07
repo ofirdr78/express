@@ -1,8 +1,11 @@
 import * as express from 'express';
 import * as mysql from 'mysql';
 import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 
 const app = express();
+
+// app.use(cors);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -17,7 +20,7 @@ connection.connect();
 
 app.get('/api/:user/:pass', (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
-        res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     let query = `SELECT * FROM users WHERE username = ? and password = ?`;
 
