@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'Aa123456',
-    database : 'orm'
+    password : '',
+    database : 'ofirdb'
 });
 connection.connect();
 
