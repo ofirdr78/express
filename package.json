@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "tscw": "tsc -w",
+    "serve": "concurrently \"npm run tscw\" \"nodemon --delay 2 app/express\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
     "@types/mysql": "0.0.34",
     "@types/node": "^8.0.17",
     "@types/socket.io": "^1.4.29",
+    "concurrently": "^3.5.0",
     "socket.io": "^2.0.3"
   },
   "dependencies": {

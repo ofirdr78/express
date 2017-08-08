@@ -5,7 +5,7 @@ import * as cors from 'cors';
 
 const app = express();
 
-// app.use(cors);
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -13,15 +13,12 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : '',
-    database : 'ofirdb'
+    password : 'Aa123456',
+    database : 'orm'
 });
 connection.connect();
 
-app.get('/api/:user/:pass', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+app.get('/api/users/:user/:pass', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ? and password = ?`;
 
     connection.query(query, [req.params.user, req.params.pass], (err, results)=>{
@@ -35,11 +32,8 @@ app.get('/api/:user/:pass', (req, res) => {
     });
 });
 
-app.get('/api/:user', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    let query = `SELECT username FROM users WHERE username = ?`;
+app.get('/api/users/:user', (req, res) => {
+    let query = `SELECT * FROM users WHERE username = ?`;
 
     connection.query(query, [req.params.user], (err, results)=>{
         if(err){
@@ -48,14 +42,16 @@ app.get('/api/:user', (req, res) => {
             return;
         }
 
-        res.send(results);
+        if(results.length === 0){
+            res.status(404).end();
+            return;
+        }
+
+        res.send(results[0]);
     });
 });
 
 app.post('/api/newuser', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     let query = `INSERT INTO users (username, password, birthdate, firstname, lastname, city, country) 
      VALUES (? , ? , ?, ? , ? , ? , ?)`;
 
@@ -78,18 +74,3 @@ app.listen(3000, (err) => {
     }
     console.log(`listening on port 3000`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
