@@ -32,6 +32,21 @@ app.get('/api/users/:user/:pass', (req, res) => {
     });
 });
 
+app.get('/api/moviegenre', (req, res) => {
+    let query = `SELECT * FROM moviegenres order by genre`;
+
+    connection.query(query, (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
+
+
 app.get('/api/users/:user', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ?`;
 
