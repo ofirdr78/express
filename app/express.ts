@@ -46,6 +46,34 @@ app.get('/api/moviegenre', (req, res) => {
     });
 });
 
+app.get('/api/musicgenre', (req, res) => {
+    let query = `SELECT * FROM musicgenres order by genre`;
+
+    connection.query(query, (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
+
+app.get('/api/bookgenre', (req, res) => {
+    let query = `SELECT * FROM bookgenres order by genre`;
+
+    connection.query(query, (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
+
 
 app.get('/api/users/:user', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ?`;
