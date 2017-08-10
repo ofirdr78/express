@@ -110,6 +110,27 @@ app.post('/api/newuser', (req, res) => {
     });
 });
 
+app.post('/api/selection/movies', (req, res) => {
+    let parsedData = '';
+    for (const row of req.body) {
+        parsedData += '(' + row.username + ', "' + row.id + '", ' + row.enabled  + '),';
+    }
+    parsedData = parsedData.substring(0, parsedData.length - 1) + '' + parsedData.substring(parsedData.length);
+
+    let query = `INSERT INTO users_movies (user_id, genre_id, enabled) VALUES ` + parsedData;
+     
+    // console.log(query);
+    connection.query(query, (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+
+        res.send(results);
+    });
+});
+
 app.listen(3000, (err) => {
     if (err) {
         console.log(err);
