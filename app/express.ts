@@ -111,16 +111,21 @@ app.post('/api/newuser', (req, res) => {
 });
 
 app.post('/api/selection/movies', (req, res) => {
-    let parsedData = '';
-    for (const row of req.body) {
-        parsedData += '(' + row.username + ', "' + row.id + '", ' + row.enabled  + '),';
-    }
-    parsedData = parsedData.substring(0, parsedData.length - 1) + '' + parsedData.substring(parsedData.length);
+    let query = `INSERT INTO users_movies (user_id, genre_id) VALUES (?, ?)` ;
+    connection.query(query, [req.body[0], req.body[1]], (err, results)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
 
-    let query = `INSERT INTO users_movies (user_id, genre_id, enabled) VALUES ` + parsedData;
-     
-    // console.log(query);
-    connection.query(query, (err, results)=>{
+        res.send(results);
+    });
+});
+
+app.delete('/api/selection/movies/:user/:selection', (req, res) => {
+    let query = `DELETE FROM users_movies WHERE (user_id =  ? AND genre_id = ?)` ;
+    connection.query(query, [req.params.user, req.params.selection], (err, results)=>{
         if(err){
             console.log(err);
             res.status(500).send(err);
