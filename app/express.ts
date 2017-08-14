@@ -7,24 +7,29 @@ const app = express();
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : '',
-    database : 'ofirdb'
+    host: 'localhost',
+    user: 'root',
+    password: 'Aa123456',
+    database: 'you_like'
 });
 connection.connect();
 
 app.get('/api/users/:user/:pass', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ? and password = ?`;
 
-    connection.query(query, [req.params.user, req.params.pass], (err, results)=>{
-        if(err){
+    connection.query(query, [req.params.user, req.params.pass], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
+            return;
+        }
+
+        if (results.length === 0) {
+            res.status(404).end();
             return;
         }
 
@@ -35,8 +40,8 @@ app.get('/api/users/:user/:pass', (req, res) => {
 app.get('/api/moviegenre', (req, res) => {
     let query = `SELECT * FROM moviegenres order by genre`;
 
-    connection.query(query, (err, results)=>{
-        if(err){
+    connection.query(query, (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -49,8 +54,8 @@ app.get('/api/moviegenre', (req, res) => {
 app.get('/api/musicgenre', (req, res) => {
     let query = `SELECT * FROM musicgenres order by genre`;
 
-    connection.query(query, (err, results)=>{
-        if(err){
+    connection.query(query, (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -63,8 +68,8 @@ app.get('/api/musicgenre', (req, res) => {
 app.get('/api/bookgenre', (req, res) => {
     let query = `SELECT * FROM bookgenres order by genre`;
 
-    connection.query(query, (err, results)=>{
-        if(err){
+    connection.query(query, (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -78,14 +83,14 @@ app.get('/api/bookgenre', (req, res) => {
 app.get('/api/users/:user', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ?`;
 
-    connection.query(query, [req.params.user], (err, results)=>{
-        if(err){
+    connection.query(query, [req.params.user], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
         }
 
-        if(results.length === 0){
+        if (results.length === 0) {
             res.status(404).end();
             return;
         }
@@ -99,8 +104,8 @@ app.post('/api/newuser', (req, res) => {
      VALUES (? , ? , ?, ? , ? , ? , ?)`;
 
     connection.query(query, [req.body.username, req.body.password, req.body.birthdate, req.body.firstname, req.body.lastname,
-                  req.body.city, req.body.country], (err, results)=>{
-        if(err){
+        req.body.city, req.body.country], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -111,9 +116,9 @@ app.post('/api/newuser', (req, res) => {
 });
 
 app.post('/api/selection/movies', (req, res) => {
-    let query = `INSERT INTO users_movies (user_id, genre_id) VALUES (?, ?)` ;
-    connection.query(query, [req.body[0], req.body[1]], (err, results)=>{
-        if(err){
+    let query = `INSERT INTO users_movies (user_id, genre_id) VALUES (?, ?)`;
+    connection.query(query, [req.body[0], req.body[1]], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -124,9 +129,9 @@ app.post('/api/selection/movies', (req, res) => {
 });
 
 app.delete('/api/selection/movies/:user/:selection', (req, res) => {
-    let query = `DELETE FROM users_movies WHERE (user_id =  ? AND genre_id = ?)` ;
-    connection.query(query, [req.params.user, req.params.selection], (err, results)=>{
-        if(err){
+    let query = `DELETE FROM users_movies WHERE (user_id =  ? AND genre_id = ?)`;
+    connection.query(query, [req.params.user, req.params.selection], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -137,9 +142,9 @@ app.delete('/api/selection/movies/:user/:selection', (req, res) => {
 });
 
 app.post('/api/selection/music', (req, res) => {
-    let query = `INSERT INTO users_music (user_id, genre_id) VALUES (?, ?)` ;
-    connection.query(query, [req.body[0], req.body[1]], (err, results)=>{
-        if(err){
+    let query = `INSERT INTO users_music (user_id, genre_id) VALUES (?, ?)`;
+    connection.query(query, [req.body[0], req.body[1]], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -150,9 +155,9 @@ app.post('/api/selection/music', (req, res) => {
 });
 
 app.delete('/api/selection/music/:user/:selection', (req, res) => {
-    let query = `DELETE FROM users_music WHERE (user_id =  ? AND genre_id = ?)` ;
-    connection.query(query, [req.params.user, req.params.selection], (err, results)=>{
-        if(err){
+    let query = `DELETE FROM users_music WHERE (user_id =  ? AND genre_id = ?)`;
+    connection.query(query, [req.params.user, req.params.selection], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -163,9 +168,9 @@ app.delete('/api/selection/music/:user/:selection', (req, res) => {
 });
 
 app.post('/api/selection/books', (req, res) => {
-    let query = `INSERT INTO users_books (user_id, genre_id) VALUES (?, ?)` ;
-    connection.query(query, [req.body[0], req.body[1]], (err, results)=>{
-        if(err){
+    let query = `INSERT INTO users_books (user_id, genre_id) VALUES (?, ?)`;
+    connection.query(query, [req.body[0], req.body[1]], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
@@ -176,9 +181,9 @@ app.post('/api/selection/books', (req, res) => {
 });
 
 app.delete('/api/selection/books/:user/:selection', (req, res) => {
-    let query = `DELETE FROM users_books WHERE (user_id =  ? AND genre_id = ?)` ;
-    connection.query(query, [req.params.user, req.params.selection], (err, results)=>{
-        if(err){
+    let query = `DELETE FROM users_books WHERE (user_id =  ? AND genre_id = ?)`;
+    connection.query(query, [req.params.user, req.params.selection], (err, results) => {
+        if (err) {
             console.log(err);
             res.status(500).send(err);
             return;
