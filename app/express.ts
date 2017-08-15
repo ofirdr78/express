@@ -13,15 +13,14 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Aa123456',
-    database: 'you_like'
+    password: '',
+    database: 'ofirdb'
 });
 connection.connect();
 
-app.get('/api/users/:user/:pass', (req, res) => {
+app.post('/api/users', (req, res) => {
     let query = `SELECT * FROM users WHERE username = ? and password = ?`;
-
-    connection.query(query, [req.params.user, req.params.pass], (err, results) => {
+    connection.query(query, [req.body.user, req.body.pass], (err, results) => {
         if (err) {
             console.log(err);
             res.status(500).send(err);
@@ -94,7 +93,6 @@ app.get('/api/users/:user', (req, res) => {
             res.status(404).end();
             return;
         }
-
         res.send(results[0]);
     });
 });
@@ -123,7 +121,7 @@ app.post('/api/selection/movies', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("movie selection added...");
         res.send(results);
     });
 });
@@ -136,7 +134,7 @@ app.delete('/api/selection/movies/:user/:selection', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("movie selection deleted...");
         res.send(results);
     });
 });
@@ -149,7 +147,7 @@ app.post('/api/selection/music', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("music selection added...");
         res.send(results);
     });
 });
@@ -162,7 +160,7 @@ app.delete('/api/selection/music/:user/:selection', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("music selection deleted...");
         res.send(results);
     });
 });
@@ -175,7 +173,7 @@ app.post('/api/selection/books', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("book selection added...");
         res.send(results);
     });
 });
@@ -188,7 +186,7 @@ app.delete('/api/selection/books/:user/:selection', (req, res) => {
             res.status(500).send(err);
             return;
         }
-
+        console.log("book selection deleted...");
         res.send(results);
     });
 });
